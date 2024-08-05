@@ -1,3 +1,3 @@
 # codSoft
-CodSoft - Java Internship 
+CodSoft - Java Internship <br>
 Author - Pranav Godse
