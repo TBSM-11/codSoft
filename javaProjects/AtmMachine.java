@@ -7,11 +7,14 @@
 6. Validate user input to ensure it is within acceptable limits (e.g., sufficient balance for withdrawals).
 7. Display appropriate messages to the user based on their chosen options and the success or failure of their transactions.
 */
-
+import java.util.Scanner;
+import java.io.*;
 public class AtmMachine {
+    Scanner s = new Scanner(System.in);
     public class AtmInterface {
         public int amount;
         public int balance = 1000;
+//withdraw method
         public int withdraw(int amount) throws Exception{
             try{
                 this.amount = amount;
@@ -26,8 +29,9 @@ public class AtmMachine {
                 }
             }
             return balance;
-
         }
+
+//deposit method     
         public int deposit(int amount) throws Exception{
             try {
                 this.amount = amount;
@@ -40,10 +44,43 @@ public class AtmMachine {
             }
             return balance;
         }
-        
+
+//check balance method     
         public int checkBalance(){
             return balance;
         }
+
+        public void saveBalanceData(){
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter("balanceData.txt"))) {
+                writer.write(balance);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
+   public class UserAccount {
+        public String Credentials(){
+            System.out.print("Enter your Card details ->");
+            String cardNumber = s.next();
+
+            System.out.println("Enter your Account type(Savings/Current) -> ");
+            String accountType = s.next();
+
+            System.out.print("Enter your Password -> ");
+            @SuppressWarnings("unused")
+            int pin = s.nextInt();
+
+            return "Your details : "+"Card number -> **** **** "+cardNumber.substring((cardNumber.length()) - 4 )+"\n\tAccount type -> "+accountType+"\n";
+            
+        }
+    } 
+
+    public static void main(String[] args) {
+       try (Scanner s = new Scanner(System.in)) {
+            AtmMachine a = new AtmMachine();
+            AtmInterface atm = a.new AtmInterface();
+            UserAccount ac = a.new UserAccount();
+       }
+    }
 }
