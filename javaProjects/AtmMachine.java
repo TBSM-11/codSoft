@@ -7,6 +7,7 @@
 6. Validate user input to ensure it is within acceptable limits (e.g., sufficient balance for withdrawals).
 7. Display appropriate messages to the user based on their chosen options and the success or failure of their transactions.
 */
+import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.io.*;
 public class AtmMachine {
@@ -14,6 +15,16 @@ public class AtmMachine {
     public class AtmInterface {
         public int amount;
         public int balance = 1000;
+
+//retrieves the balance from the file
+        public AtmInterface(){
+            try (BufferedReader reader = new BufferedReader(new FileReader("balanceData.txt"))) {
+                balance = Integer. parseInt(reader.readLine());
+            } 
+            catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
 //withdraw method
         public int withdraw(int amount) throws Exception{
             try{
@@ -50,10 +61,12 @@ public class AtmMachine {
             return balance;
         }
 
+//stores the balance on a file 
         public void saveBalanceData(){
             try (BufferedWriter writer = new BufferedWriter(new FileWriter("balanceData.txt"))) {
-                writer.write(balance);
-            } catch (IOException e) {
+                writer.write(Integer.toString(balance));
+            } 
+            catch (IOException e) {
                 e.printStackTrace();
             }
         }
@@ -79,8 +92,67 @@ public class AtmMachine {
     public static void main(String[] args) {
        try (Scanner s = new Scanner(System.in)) {
             AtmMachine a = new AtmMachine();
-            AtmInterface atm = a.new AtmInterface();
             UserAccount ac = a.new UserAccount();
+            AtmInterface atm = a.new AtmInterface();
+
+//to get user info/credentials
+            String credentials = ac.Credentials();
+            System.out.print(credentials);
+
+//to get user input for options to perform until a valid option is entered(throws InputMismatchException)
+            System.out.println("1.Deposit\n2.Withdraw\n3.Check Balance");
+
+            boolean validOption = false;
+            while (!validOption) {
+                try {
+                System.out.print("Enter your option : ");
+                int option = s.nextInt();
+                validOption = true;
+
+                switch (option) {
+                    case 1:
+//to deposit amount
+                        System.out.print("Enter Amount -> ");
+                        int amount = s.nextInt();
+                        try {
+                            atm.deposit(amount);
+                        } catch (Exception e) {
+                            e.getMessage();
+                        }
+                        break;
+
+                    case 2:
+//to withdraw amount
+                        System.out.print("Enter Amount -> ");
+                        amount = s.nextInt();
+                        try {
+                            atm.withdraw(amount);
+                        } catch (Exception e) {
+                            e.getMessage();
+                        }                   
+                        break;
+
+                    case 3:
+//to check balance
+                        System.out.print("Enter Amount -> ");
+                        amount = s.nextInt();
+                        try {
+                            atm.checkBalance();
+                        } catch (Exception e) {
+                            e.getMessage();
+                        }                    
+                        break;
+
+                    default:
+                        System.out.println("Invalid option entered.");
+                        break;
+                }               
+            } 
+            catch (InputMismatchException e) {
+                System.out.println("Invalid option entered.");
+            }
+        }
+
        }
     }
 }
