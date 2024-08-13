@@ -74,15 +74,44 @@ public class AtmMachine {
 
    public class UserAccount {
         public String Credentials(){
+//for card number
             System.out.print("Enter your Card details ->");
-            String cardNumber = s.next();
+            String cardNumber = s.next();   
 
-            System.out.println("Enter your Account type(Savings/Current) -> ");
-            String accountType = s.next();
+//for account type
+            Boolean accountCheck = false;
+            String accountType = null;
+            while (!accountCheck) {
+                System.out.println("Enter your Account type(Savings[s]/Current[c]) -> ");
+                accountType = s.next();
 
-            System.out.print("Enter your Password -> ");
-            @SuppressWarnings("unused")
-            int pin = s.nextInt();
+                if(accountType.equalsIgnoreCase("s")){
+                    accountType = "Savings";
+                    accountCheck = true;
+                }
+                if(accountType.equalsIgnoreCase("c")){
+                    accountType = "Current";
+                    accountCheck = true;
+                }
+                else{
+                    System.out.println("Invalid account type.Please enter a valid Account type.");
+                }              
+            }
+
+//for password
+            boolean passCheck = false;
+            int wrongPass = 0;
+            while(!passCheck && wrongPass < 3)
+            try {
+                System.out.print("Enter your Password -> ");
+                @SuppressWarnings("unused")
+                int pin = s.nextInt();
+
+            } 
+            catch (NumberFormatException e) {
+                System.out.println("Enter a valid Password");
+                wrongPass++;
+            }
 
             return "Your details : "+"Card number -> **** **** "+cardNumber.substring((cardNumber.length()) - 4 )+"\n\tAccount type -> "+accountType+"\n";
             
@@ -96,6 +125,7 @@ public class AtmMachine {
             AtmInterface atm = a.new AtmInterface();
 
 //to get user info/credentials
+            System.out.println("Please enter your credentials -> ");
             String credentials = ac.Credentials();
             System.out.print(credentials);
 
