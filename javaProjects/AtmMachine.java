@@ -1,10 +1,10 @@
 /*
-1. Create a class to represent the ATM machine.
-2. Design the user interface for the ATM, including options such as withdrawing, depositing, and checking the balance.
-3. Implement methods for each option, such as withdraw(amount), deposit(amount), and checkBalance().
-4. Create a class to represent the user's bank account, which stores the account balance.
-5. Connect the ATM class with the user's bank account class to access and modify the account balance.
-6. Validate user input to ensure it is within acceptable limits (e.g., sufficient balance for withdrawals).
+1. Create a class to represent the ATM machine. #done
+2. Design the user interface for the ATM, including options such as withdrawing, depositing, and checking the balance. #done
+3. Implement methods for each option, such as withdraw(amount), deposit(amount), and checkBalance(). #done
+4. Create a class to represent the user's bank account, which stores the account balance. 
+5. Connect the ATM class with the user's bank account class to access and modify the account balance. 
+6. Validate user input to ensure it is within acceptable limits (e.g., sufficient balance for withdrawals). #done
 7. Display appropriate messages to the user based on their chosen options and the success or failure of their transactions.
 */
 import java.util.InputMismatchException;
@@ -19,7 +19,7 @@ public class AtmMachine {
 //retrieves the balance from the file
         public AtmInterface(){
             try (BufferedReader reader = new BufferedReader(new FileReader("balanceData.txt"))) {
-                balance = Integer. parseInt(reader.readLine());
+                balance = Integer.parseInt(reader.readLine());
             } 
             catch (IOException e) {
                 e.printStackTrace();
@@ -80,7 +80,7 @@ public class AtmMachine {
 
 //for account type
             Boolean accountCheck = false;
-            String accountType = null;
+            String accountType = "default";
             while (!accountCheck) {
                 System.out.println("Enter your Account type(Savings[s]/Current[c]) -> ");
                 accountType = s.next();
@@ -106,7 +106,6 @@ public class AtmMachine {
                 System.out.print("Enter your Password -> ");
                 @SuppressWarnings("unused")
                 int pin = s.nextInt();
-
             } 
             catch (NumberFormatException e) {
                 System.out.println("Enter a valid Password");
@@ -132,36 +131,47 @@ public class AtmMachine {
 //to get user input for options to perform until a valid option is entered(throws InputMismatchException)
             System.out.println("1.Deposit\n2.Withdraw\n3.Check Balance");
 
+            boolean transactionSuccession =  false;
             boolean validOption = false;
+            
             while (!validOption) {
                 try {
                 System.out.print("Enter your option : ");
                 int option = s.nextInt();
+                int amount;
                 validOption = true;
 
                 switch (option) {
                     case 1:
 //to deposit amount
-                        System.out.print("Enter Amount -> ");
-                        int amount = s.nextInt();
-                        try {
-                            atm.deposit(amount);
-                        } catch (Exception e) {
-                            e.getMessage();
+                        while (!transactionSuccession) {
+                            System.out.print("Enter Amount -> ");
+                            amount = s.nextInt();
+                            try {
+                                atm.deposit(amount);
+                                atm.saveBalanceData();
+                                transactionSuccession = true;
+                            } catch (Exception e) {
+                                e.getMessage();
+                            }
+                            break;                         
                         }
-                        break;
+
 
                     case 2:
 //to withdraw amount
-                        System.out.print("Enter Amount -> ");
-                        amount = s.nextInt();
-                        try {
-                            atm.withdraw(amount);
-                        } catch (Exception e) {
-                            e.getMessage();
-                        }                   
-                        break;
-
+                        while (!transactionSuccession) {
+                            System.out.print("Enter Amount -> ");
+                            amount = s.nextInt();
+                            try {
+                                atm.withdraw(amount);
+                                transactionSuccession = true;
+                                atm.saveBalanceData();
+                            } catch (Exception e) {
+                                e.getMessage();
+                            }                   
+                            break;
+                        }
                     case 3:
 //to check balance
                         System.out.print("Enter Amount -> ");
@@ -174,9 +184,14 @@ public class AtmMachine {
                         break;
 
                     default:
-                        System.out.println("Invalid option entered.");
+                        if (transactionSuccession) {
+                            System.out.println("Transaction successful.");
+                        }
+                        else{
+                        System.out.println("Invalid option entered.Transaction failed.");
+                        }
                         break;
-                }               
+                }
             } 
             catch (InputMismatchException e) {
                 System.out.println("Invalid option entered.");
